@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import getWeatherData from "./getWeatherData";
+import APIKEY from './apikey';
 import "./index.css";
 
 export default class SearchBar extends Component {
   getWeather = (event) => {
     const { updateWeather } = this.props;
     const defaultUrl = "http://api.openweathermap.org/data/2.5";
-    const apiKey = "e81ba22bb4b265a3f48520919ab1e382";
+    const apiKey = APIKEY;
     const { keyCode, target } = event;
     let cityName = target.value;
     if (keyCode !== 13) return;
