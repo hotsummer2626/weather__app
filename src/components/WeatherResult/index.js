@@ -3,15 +3,13 @@ import "./index.css";
 
 export default class SearchBar extends Component {
   render() {
-    const {
-      weatherIcon,
-      description,
-      temperature,
-      location,
-      min,
-      max,
-      humidity,
-    } = this.props;
+    const { weather, main, name, sys, temperature } = this.props;
+    const location = `${name} | ${sys.country}`;
+    const weatherIcon = weather[0].icon;
+    const description = weather[0].description;
+    const minTemp = parseFloat(main.temp_min - 273.15).toFixed(1);
+    const maxTemp = parseFloat(main.temp_max - 273.15).toFixed(1);
+    const humidity = main.humidity;
 
     return (
       <div className="weather">
@@ -33,7 +31,7 @@ export default class SearchBar extends Component {
           <div className="weather__description">{description}</div>
         </div>
         <div className="weather__otherinfo">
-          || Min: {min}&deg; || Max: {max}&deg; || humidity: {humidity}%
+          || Min: {minTemp}&deg; || Max: {maxTemp}&deg; || humidity: {humidity}%
         </div>
       </div>
     );
