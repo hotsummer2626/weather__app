@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
+import ResultContainer from "../../../ResultContainer/ResultContainer";
+import { WeatherIcon, TextStyle, CardStyle } from "../../../Style/Style";
+import { MQ } from "../../../../mediaQueries";
 
-const Container = styled.div`
-  padding: 20px 0;
+const DisplayContainer = styled.div`
+  ${MQ("sm")`
+    display: none;
+  `}
 `;
-const Title = styled.h2`
-  font-size: 25px;
-  margin-bottom: 20px;
-`;
+
 const WeatherInfos = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -17,17 +19,14 @@ const InfoWrapper = styled.div`
   padding: 15px 0;
   display: grid;
   justify-items: center;
-  border: 1px solid black;
-  border-radius: 8px;
+  ${CardStyle};
 `;
 const Time = styled.span`
+  ${TextStyle};
   font-size: 20px;
 `;
-const Icon = styled.img.attrs(({ icon }) => ({
-  src: `http://openweathermap.org/img/wn/${icon}@2x.png`,
-  alt: "weather-icon",
-}))``;
 const Temperature = styled.span`
+  ${TextStyle};
   font-size: 20px;
 `;
 
@@ -44,18 +43,19 @@ const Hourly = ({ weatherInfos }) => {
   });
 
   return (
-    <Container>
-      <Title>Todays weather</Title>
-      <WeatherInfos>
-        {displayHourList.map((info, index) => (
-          <InfoWrapper key={index}>
-            <Time>{info.time}</Time>
-            <Icon icon={info.weather[0].icon} />
-            <Temperature>{info.temperature}&deg;</Temperature>
-          </InfoWrapper>
-        ))}
-      </WeatherInfos>
-    </Container>
+    <DisplayContainer>
+      <ResultContainer subtitle="Todays weather">
+        <WeatherInfos>
+          {displayHourList.map((info, index) => (
+            <InfoWrapper key={index}>
+              <Time>{info.time}</Time>
+              <WeatherIcon icon={info.weather[0].icon} />
+              <Temperature>{info.temperature}&deg;</Temperature>
+            </InfoWrapper>
+          ))}
+        </WeatherInfos>
+      </ResultContainer>
+    </DisplayContainer>
   );
 };
 

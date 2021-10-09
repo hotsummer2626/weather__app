@@ -1,28 +1,35 @@
 import React from "react";
 import styled from "styled-components";
-import { MONTH_TEXT } from "../../constants/months";
-import { WEEK_TEXT } from "../../constants/weeks";
+import { MONTH_TEXT, WEEK_TEXT } from "../../constants/constants";
+import ResultContainer from "../ResultContainer/ResultContainer";
+import { WeatherIcon, TextStyle, CardStyle } from "../Style/Style";
+import { MQ } from "../../mediaQueries";
+import { buildRelevantInfoList } from "./buildRelevantInfoList";
 
-const Container = styled.div``;
-const Location = styled.h1`
-  font-size: 50px;
-`;
-const Time = styled.h2`
-  font-size: 25px;
-`;
 const WeatherDetails = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   justify-items: center;
+  align-items: center;
   position: relative;
   &:before {
     content: "";
     display: block;
     width: 2px;
     height: 100%;
-    background-color: gray;
+    background-color: #fff;
     position: absolute;
   }
+  ${CardStyle};
+  ${MQ("sm")`
+    grid-template-columns: initial;
+    grid-template-rows: repeat(2, 1fr);
+    &:before {
+      width: 100%;
+      height: 2px;
+      top: 50%
+    }
+  `}
 `;
 const Temperature = styled.div`
   display: grid;
@@ -31,18 +38,22 @@ const Temperature = styled.div`
   align-items: center;
   text-align: center;
 `;
-const Icon = styled.img.attrs(({ icon }) => ({
-  src: `http://openweathermap.org/img/wn/${icon}@2x.png`,
-  alt: "weather-icon",
-}))`
-  display: block;
+const Icon = styled(WeatherIcon)`
   width: 200px;
+  ${MQ("sm")`
+    width: 150px;
+  `}
 `;
 const Number = styled.span`
+  ${TextStyle};
   display: block;
   font-size: 80px;
+  ${MQ("sm")`
+    font-size: 60px;
+  `}
 `;
 const Description = styled.span`
+  ${TextStyle};
   font-size: 20px;
 `;
 const RelevantInfos = styled.div`
@@ -52,38 +63,25 @@ const RelevantInfos = styled.div`
   text-align: center;
   row-gap: 1rem;
   column-gap: 2rem;
+  ${MQ("sm")`
+    row-gap: 0.5rem;
+  `}
 `;
 const InfoWrapper = styled.div``;
 const InfoValue = styled.span`
+  ${TextStyle};
   display: block;
   font-size: 25px;
+  ${MQ("sm")`
+    font-size: 20px;
+  `}
 `;
-const InfoText = styled.span``;
-
-const buildRelevantInfoList = ({ main, wind, sys }) => {
-  const formattedNumber = (number) =>
-    number.toString().length === 1 ? `0${number}` : number;
-  const sunriseDate = new Date(sys.sunrise * 1000);
-  const sunsetDate = new Date(sys.sunset * 1000);
-  const sunriseHour = formattedNumber(sunriseDate.getHours());
-  const sunriseMinute = formattedNumber(sunriseDate.getMinutes());
-  const sunsetHour = formattedNumber(sunsetDate.getHours());
-  const sunsetMinute = formattedNumber(sunsetDate.getMinutes());
-  return [
-    {
-      text: "High",
-      value: `${parseFloat(main.temp_max - 273.15).toFixed(1)}°`,
-    },
-    { text: "Wind", value: `${wind.speed} m/s` },
-    { text: "Sunrise", value: `${sunriseHour}:${sunriseMinute}` },
-    {
-      text: "Low",
-      value: `${parseFloat(main.temp_min - 273.15).toFixed(1)}°`,
-    },
-    { text: "Humidity", value: main.humidity },
-    { text: "Sunset", value: `${sunsetHour}:${sunsetMinute}` },
-  ];
-};
+const InfoText = styled.span`
+  ${TextStyle};
+  ${MQ("sm")`
+    font-size: 10px;
+  `}
+`;
 
 const CurrentWeather = ({ weatherInfos }) => {
   const { name, sys, dt, weather, temperature } = weatherInfos;
@@ -91,10 +89,23 @@ const CurrentWeather = ({ weatherInfos }) => {
   const week = WEEK_TEXT[date.getDay()].full;
   const day = date.getDate();
   const month = MONTH_TEXT[date.getMonth()];
+
+  const renderRelevantInfos = (info) => (
+    <RelevantInfos>
+      {buildRelevantInfoList(info).map(({ text, value }) => (
+        <InfoWrapper key={text}>
+          <InfoValue>{value}</InfoValue>
+          <InfoText>{text}</InfoText>
+        </InfoWrapper>
+      ))}
+    </RelevantInfos>
+  );
+
   return (
-    <Container>
-      <Location>{`${name} | ${sys.country}`}</Location>
-      <Time>{`${week} ${day} ${month}`}</Time>
+    <ResultContainer
+      title={`${name} | ${sys.country}`}
+      subtitle={`${week} ${day} ${month}`}
+    >
       <WeatherDetails>
         <Temperature>
           <Icon icon={weather[0].icon} />
@@ -103,16 +114,9 @@ const CurrentWeather = ({ weatherInfos }) => {
             <Description>{weather[0].description}</Description>
           </div>
         </Temperature>
-        <RelevantInfos>
-          {buildRelevantInfoList(weatherInfos).map(({ text, value }) => (
-            <InfoWrapper key={text}>
-              <InfoValue>{value}</InfoValue>
-              <InfoText>{text}</InfoText>
-            </InfoWrapper>
-          ))}
-        </RelevantInfos>
+        {renderRelevantInfos(weatherInfos)}
       </WeatherDetails>
-    </Container>
+    </ResultContainer>
   );
 };
 

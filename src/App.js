@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import LoadingElement from "./components/LoadingElement";
 import SearchBar from "./components/SearchBar";
+import SearchBar1 from "./components/SearchBar1";
 import WeatherResult from "./components/WeatherResult";
-import APIKEY from "./components/SearchBar/apikey";
+import { getCurrentWeather, getForecastWeather } from "./api/apis";
 import CurrentWeather from "./components/CurrentWeather/CurrentWeather";
 import ForecaseWeather from "./components/ForecastWeather/ForecastWeather";
 import "./App.css";
+import weather_bg_img from "./assets/weather-bg.jpg";
+import { MQ } from "./mediaQueries";
 
 const Container = styled.div`
   width: 1200px;
@@ -15,25 +17,15 @@ const Container = styled.div`
   padding: 30px;
   border: 2px solid black;
   border-radius: 10px;
+  background-image: url(${weather_bg_img});
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  ${MQ("sm")`
+    width: 100%;
+    padding: 30px 10px;
+  `}
 `;
-
-const getCurrentWeather = (cityName) => {
-  const defaultUrl = "http://api.openweathermap.org/data/2.5";
-  const apiKey = APIKEY;
-  return axios
-    .get(`${defaultUrl}/weather?q=${cityName}&appid=${apiKey}`)
-    .then((res) => res.data);
-};
-
-const getForecastWeather = (lat, lon) => {
-  const defaultUrl = "http://api.openweathermap.org/data/2.5";
-  const apiKey = APIKEY;
-  return axios
-    .get(
-      `${defaultUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
-    )
-    .then((res) => res.data);
-};
 
 const App = () => {
   const [weather, setWeather] = useState({});
@@ -46,8 +38,6 @@ const App = () => {
     weather.temperature = parseFloat(weather.main.temp - 273.15).toFixed(1);
     const { lat, lon } = weather.coord;
     const forecastWeather = await getForecastWeather(lat, lon);
-    // console.log(forecastWeather);
-    // console.log(new Date(1633528800000));
     setWeather(weather);
     setForecastWeather(forecastWeather);
     setIsLoaing(false);
@@ -58,7 +48,7 @@ const App = () => {
   }, []);
 
   return (
-    <>
+    <div style={{display:'flex'}}>
       <div
         className={weather.temperature > 16 ? "container warm" : "container"}
       >
@@ -69,15 +59,18 @@ const App = () => {
           <WeatherResult {...weather} />
         )}
       </div>
-      {isLoading ? (
-        <LoadingElement loading={isLoading} />
-      ) : (
-        <Container>
-          <CurrentWeather weatherInfos={weather} />
-          <ForecaseWeather forecastWeatherInfos={forecastWeather} />
-        </Container>
-      )}
-    </>
+      <Container>
+        <SearchBar1 setDataWorkFlow={setDataWorkFlow} />
+        {isLoading ? (
+          <LoadingElement loading={isLoading} />
+        ) : (
+          <>
+            <CurrentWeather weatherInfos={weather} />
+            <ForecaseWeather forecastWeatherInfos={forecastWeather} />
+          </>
+        )}
+      </Container>
+    </div>
   );
 };
 

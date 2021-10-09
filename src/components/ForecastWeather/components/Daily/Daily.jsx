@@ -1,52 +1,84 @@
 import React from "react";
 import styled from "styled-components";
-import { WEEK_TEXT } from "../../../../constants/weeks";
+import { WEEK_TEXT } from "../../../../constants/constants";
+import ResultContainer from "../../../ResultContainer/ResultContainer";
+import { WeatherIcon, TextStyle, CardStyle } from "../../../Style/Style";
+import { MQ } from "../../../../mediaQueries";
+import { buildRelevantInfoList } from "./buildRelevantInfoList";
 
-const Container = styled.div``;
-const Title = styled.h2``;
 const WeatherInfos = styled.div`
-display: grid;
-row-gap: 2px;
-background-color: gray;
-border-top: 2px solid gray;
-border-bottom: 2px solid gray;
-
+  display: grid;
+  row-gap: 2px;
+  ${MQ("sm")`
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  `}
 `;
 const InfoWrapper = styled.div`
-background-color: #fff;
-display: grid;
-grid-template-columns:0.8fr 1fr 4fr;
-justify-items: center;
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 4fr;
+  justify-items: center;
+  align-items: center;
+  ${CardStyle};
+  ${MQ("sm")`
+    grid-template-columns: initial;
+    padding: 20px 0;
+  `}
 `;
 const Time = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Icon = styled(WeatherIcon)`
+  ${MQ("sm")`
+    width: 80px;
+  `}
 `;
 const Week = styled.span`
-font-size: 25px;
+  ${TextStyle};
+  font-size: 25px;
+  ${MQ("sm")`
+    font-size: 20px;
+  `}
 `;
-const Day = styled.span``;
-const Icon = styled.img.attrs(({ icon }) => ({
-  src: `http://openweathermap.org/img/wn/${icon}@2x.png`,
-  alt: "weather-icon",
-}))``;
+const Day = styled.span`
+  ${TextStyle};
+  ${MQ("sm")`
+    display: none;
+  `}
+`;
+
 const RelevantInfos = styled.div`
-display: grid;
-column-gap: 6rem;
-grid-template-columns: repeat(4,1fr);
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  ${MQ("sm")`
+    display: none;
+  `}
 `;
 const RelevantInfoWrapper = styled.div`
-display: flex;
-flex-direction: column;
-text-align: center;
-justify-content: center;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
 `;
 const InfoValue = styled.span`
-font-size: 25px;
+  ${TextStyle};
+  font-size: 25px;
 `;
-const InfoText = styled.span``;
+const InfoText = styled.span`
+  ${TextStyle};
+`;
+const InfoRange = styled.span`
+  display: none;
+  ${TextStyle};
+  ${MQ("sm")`
+    display: initial;
+    font-size: 20px;
+  `}
+`;
 
 const Daily = ({ weatherInfos }) => {
   console.log(weatherInfos);
@@ -59,44 +91,43 @@ const Daily = ({ weatherInfos }) => {
     return { week, month, day, ...weatherInfos[dailyIndex] };
   });
 
-  const buildRelevantInfoList = ({ humidity, wind_speed, temp }) => {
-    return [
-      {
-        text: "Low",
-        value: `${parseFloat(temp.min - 273.15).toFixed(1)}°`,
-      },
-      {
-        text: "High",
-        value: `${parseFloat(temp.max - 273.15).toFixed(1)}°`,
-      },
-      { text: "Wind", value: `${wind_speed} m/s` },
-      { text: "Humidity", value: humidity },
-    ];
-  };
+  const renderTime = (info) => (
+    <Time>
+      <Week>{info.week}</Week>
+      <Day>{`${info.day}/${info.month}`}</Day>
+    </Time>
+  );
+
+  const renderRelevantInfos = (info) => (
+    <RelevantInfos>
+      {buildRelevantInfoList(info).map(({ text, value }) => (
+        <RelevantInfoWrapper key={text}>
+          <InfoValue>{value}</InfoValue>
+          <InfoText>{text}</InfoText>
+        </RelevantInfoWrapper>
+      ))}
+    </RelevantInfos>
+  );
+
+  const renderInfoRange = (info) => (
+    <InfoRange>{`${parseInt(info.temp.min - 273.15)}~${parseInt(
+      info.temp.max - 273.15
+    )}°`}</InfoRange>
+  );
 
   return (
-    <Container>
-      <Title>Next 5 days</Title>
+    <ResultContainer subtitle="Next 5 days">
       <WeatherInfos>
         {displayDailyList.map((info, index) => (
           <InfoWrapper key={index}>
-            <Time>
-              <Week>{info.week}</Week>
-              <Day>{`${info.day}/${info.month}`}</Day>
-            </Time>
+            {renderTime(info)}
             <Icon icon={info.weather[0].icon} />
-            <RelevantInfos>
-              {buildRelevantInfoList(info).map(({ text, value }) => (
-                <RelevantInfoWrapper key={text}>
-                  <InfoValue>{value}</InfoValue>
-                  <InfoText>{text}</InfoText>
-                </RelevantInfoWrapper>
-              ))}
-            </RelevantInfos>
+            {renderRelevantInfos(info)}
+            {renderInfoRange(info)}
           </InfoWrapper>
         ))}
       </WeatherInfos>
-    </Container>
+    </ResultContainer>
   );
 };
 
