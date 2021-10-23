@@ -33,14 +33,14 @@ const Time = styled.div`
 `;
 const Icon = styled(WeatherIcon)`
   ${MQ("sm")`
-    width: 80px;
+    width: 50px;
   `}
 `;
 const Week = styled.span`
   ${TextStyle};
   font-size: 25px;
   ${MQ("sm")`
-    font-size: 20px;
+    font-size: 15px;
   `}
 `;
 const Day = styled.span`
@@ -76,7 +76,7 @@ const InfoRange = styled.span`
   ${TextStyle};
   ${MQ("sm")`
     display: initial;
-    font-size: 20px;
+    font-size: 10px;
   `}
 `;
 

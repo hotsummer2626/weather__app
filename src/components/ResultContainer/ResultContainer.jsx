@@ -10,7 +10,7 @@ const Title = styled.h1`
   ${TextStyle};
   font-size: 50px;
   ${MQ("sm")`
-    font-size: 30px;
+    font-size: 24px;
   `}
 `;
 const Subtitle = styled.h2`

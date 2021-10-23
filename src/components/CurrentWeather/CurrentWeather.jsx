@@ -23,11 +23,8 @@ const WeatherDetails = styled.div`
   ${CardStyle};
   ${MQ("sm")`
     grid-template-columns: initial;
-    grid-template-rows: repeat(2, 1fr);
     &:before {
-      width: 100%;
-      height: 2px;
-      top: 50%
+      display: none;
     }
   `}
 `;
@@ -37,11 +34,14 @@ const Temperature = styled.div`
   gap: 2rem;
   align-items: center;
   text-align: center;
+  ${MQ("sm")`
+    gap: initial;
+  `}
 `;
 const Icon = styled(WeatherIcon)`
   width: 200px;
   ${MQ("sm")`
-    width: 150px;
+    width: 140px;
   `}
 `;
 const Number = styled.span`
@@ -49,7 +49,7 @@ const Number = styled.span`
   display: block;
   font-size: 80px;
   ${MQ("sm")`
-    font-size: 60px;
+    font-size: 50px;
   `}
 `;
 const Description = styled.span`
@@ -64,7 +64,7 @@ const RelevantInfos = styled.div`
   row-gap: 1rem;
   column-gap: 2rem;
   ${MQ("sm")`
-    row-gap: 0.5rem;
+    display: none;
   `}
 `;
 const InfoWrapper = styled.div``;

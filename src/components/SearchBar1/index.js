@@ -8,8 +8,8 @@ const Container = styled.div`
   top: 38px;
   right: 30px;
   ${MQ("sm")`
-    width: 47%;
-    right: 10px;
+    position: initial;
+    width: 100%;
   `}
 `;
 
@@ -29,6 +29,10 @@ const Input = styled.input`
   &:focus{
     background-color: rgba(255, 255, 255, 0.8);
   }
+  ${MQ("sm")`
+    border-radius: 0 0 16px 16px;
+    margin-bottom: 10px;
+  `}
 `;
 
 const SearchBar1 = ({ setDataWorkFlow }) => {
