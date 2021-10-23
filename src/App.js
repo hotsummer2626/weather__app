@@ -49,7 +49,7 @@ const App = () => {
 
   return (
     <div style={{display:'flex'}}>
-      {/* <div
+      <div
         className={weather.temperature > 16 ? "container warm" : "container"}
       >
         <SearchBar setDataWorkFlow={setDataWorkFlow} />
@@ -58,7 +58,7 @@ const App = () => {
         ) : (
           <WeatherResult {...weather} />
         )}
-      </div> */}
+      </div>
       <Container>
         <SearchBar1 setDataWorkFlow={setDataWorkFlow} />
         {isLoading ? (

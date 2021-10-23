@@ -5,6 +5,7 @@ export default class LoadingElement extends Component {
   render() {
     const override = `
     display: block;
+    width: max-content;
     margin: 0 auto;
     border-color: black;
     `;
