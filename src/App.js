@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LoadingElement from "./components/LoadingElement";
 import SearchBar from "./components/SearchBar";
-import SearchBar1 from "./components/SearchBar1";
-import WeatherResult from "./components/WeatherResult";
 import { getCurrentWeather, getForecastWeather } from "./api/apis";
 import CurrentWeather from "./components/CurrentWeather/CurrentWeather";
 import ForecaseWeather from "./components/ForecastWeather/ForecastWeather";
@@ -35,11 +33,13 @@ const App = () => {
   const setDataWorkFlow = async (cityName) => {
     setIsLoaing(true);
     const weather = await getCurrentWeather(cityName);
-    weather.temperature = parseFloat(weather.main.temp - 273.15).toFixed(1);
-    const { lat, lon } = weather.coord;
-    const forecastWeather = await getForecastWeather(lat, lon);
-    setWeather(weather);
-    setForecastWeather(forecastWeather);
+    if (weather) {
+      weather.temperature = parseFloat(weather.main.temp - 273.15).toFixed(1);
+      const { lat, lon } = weather.coord;
+      const forecastWeather = await getForecastWeather(lat, lon);
+      setWeather(weather);
+      setForecastWeather(forecastWeather);
+    }
     setIsLoaing(false);
   };
 
@@ -48,29 +48,17 @@ const App = () => {
   }, []);
 
   return (
-    <div style={{display:'flex'}}>
-      <div
-        className={weather.temperature > 16 ? "container warm" : "container"}
-      >
-        <SearchBar setDataWorkFlow={setDataWorkFlow} />
-        {isLoading ? (
-          <LoadingElement loading={isLoading} />
-        ) : (
-          <WeatherResult {...weather} />
-        )}
-      </div>
-      <Container>
-        <SearchBar1 setDataWorkFlow={setDataWorkFlow} />
-        {isLoading ? (
-          <LoadingElement loading={isLoading} />
-        ) : (
-          <>
-            <CurrentWeather weatherInfos={weather} />
-            <ForecaseWeather forecastWeatherInfos={forecastWeather} />
-          </>
-        )}
-      </Container>
-    </div>
+    <Container>
+      <SearchBar setDataWorkFlow={setDataWorkFlow} />
+      {isLoading ? (
+        <LoadingElement loading={isLoading} />
+      ) : (
+        <>
+          <CurrentWeather weatherInfos={weather} />
+          <ForecaseWeather forecastWeatherInfos={forecastWeather} />
+        </>
+      )}
+    </Container>
   );
 };
 
